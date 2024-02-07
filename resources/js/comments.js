@@ -11,10 +11,10 @@ document.addEventListener('click', function(event) {
                 .then(response => response.text())
                 .then(data => container.innerHTML = data);
 
-            button.innerText = 'Скрыть ответы';
+            button.innerText = 'Close replies';
             container.style.display = 'block';
         } else {
-            button.innerText = 'Показать ответы';
+            button.innerText = 'Show replies';
             container.style.display = 'none';
         }
     }

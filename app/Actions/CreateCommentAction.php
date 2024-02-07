@@ -1,0 +1,113 @@
+<?php
+
+namespace App\Actions;
+
+use App\Dto\CommentDto;
+use App\Exceptions\EntityCreateException;
+use App\Models\Comment;
+use App\Models\Text;
+use DB;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Validation\ValidationException;
+use Image;
+use Log;
+use Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist;
+use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Throwable;
+
+class CreateCommentAction
+{
+    /**
+     * @throws EntityCreateException
+     * @throws ValidationException
+     */
+    public function execute(CommentDto $dto): Comment
+    {
+        try {
+            return DB::transaction(function () use ($dto): Comment {
+                $comment = Comment::create($dto->toCommentArray());
+
+                $dto->setCommentId($comment->id);
+
+                $text = Text::create($dto->toTextArray());
+
+                if ($uploadedFile = $dto->getMedia()) {
+//                    $mediaPath = $uploadedFile->store('public/media');
+
+                    $media = match ($uploadedFile->getMimeType()) {
+                        'image/jpeg',
+                        'image/png',
+                        'image/gif' => $this->saveImage($uploadedFile, $comment),
+                        'text/plain' => $this->saveTextfile($uploadedFile, $comment),
+                        default => throw ValidationException::withMessages([
+                            'media' => __('validation.mime'),
+                        ]),
+                    };
+
+                    $comment->setRelation('media', collect($media));
+                    // Проверка и обработка изображений
+//                    if ($uploadedFile->getMimeType() === 'image/jpeg' || $uploadedFile->getMimeType() === 'image/png' || $uploadedFile->getMimeType() === 'image/gif') {
+//                        // TODO add try catch with Throwable ad throw Validation exception
+//                        $image = \Image::make($uploadedFile->path());
+//                        $image->fit(320, 240); // Обрезаем изображение до заданных размеров
+//                        $image->save(storage_path('app/' . $mediaPath));
+////                        \Storage::disk('public')->put('/', $image->stream());
+////                        $comment->addMediaFromStream($image->stream())->toMediaCollection('comment_media');
+//                    }
+
+                    // Проверка и обработка текстовых файлов
+//                    if ($uploadedFile->getMimeType() === 'text/plain') {
+//                        if ($uploadedFile->getSize() > 100 * 1024) {
+//                            throw ValidationException::withMessages([
+//                                'media' => 'The file may not be greater than 100 kilobytes.',
+//                            ]);
+//                        } else {
+//                            $uploadedFile->storeAs('public/media', $uploadedFile->getClientOriginalName());
+////                            $comment->addMedia($uploadedFile->path())->toMediaCollection('comment_media');
+//                        }
+//                    }
+//
+//                    $comment->addMedia(storage_path('app/' . $mediaPath))->toMediaCollection('comment_media');
+                }
+
+                return $comment->setRelation('text', $text);
+            });
+        } catch (ValidationException $e) {
+            throw $e;
+        } catch (Throwable $e) {
+            Log::error('Fail create comment', ['exception' => $e]);
+            throw new EntityCreateException();
+        }
+    }
+
+    /**
+     * @throws FileIsTooBig
+     * @throws FileDoesNotExist
+     */
+    private function saveImage(UploadedFile $file, Comment $comment): Media
+    {
+        // TODO add try catch with Throwable ad throw Validation exception
+        $image = Image::make($file->path());
+        $image->fit(320, 240); // Обрезаем изображение до заданных размеров
+        return $comment->addMediaFromStream($image->stream())
+            ->toMediaCollection('comment_media');
+    }
+
+    /**
+     * @throws ValidationException
+     * @throws FileDoesNotExist
+     * @throws FileIsTooBig
+     */
+    private function saveTextFile(UploadedFile $file, Comment $comment): Media
+    {
+        if ($file->getSize() > 100 * 1024) {
+            throw ValidationException::withMessages([
+                'media' => 'The file may not be greater than 100 kilobytes.',
+            ]);
+        }
+
+        return $comment->addMedia($file->path())
+                ->toMediaCollection('comment_media');
+    }
+}

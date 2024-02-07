@@ -26,27 +26,56 @@
                 </div>
 
                 <form method="get" action="{{ route('comments.index') }}">
-                    <label for="sort" class="me-2">Сортировать по:</label>
-                    <select name="sort_direction" id="sort_direction" class="form-select me-2">
-                        <option value="created_at|desc" {{ request('sort_direction') == 'created_at|desc' ? 'selected' : '' }}>Дата (убывание)</option>
-                        <option value="created_at|asc" {{ request('sort_direction') == 'created_at|asc' ? 'selected' : '' }}>Дата (возрастание)</option>
-                        <option value="user_name|asc" {{ request('sort_direction') == 'user_name|asc' ? 'selected' : '' }}>Имя (возрастание)</option>
-                        <option value="user_name|desc" {{ request('sort_direction') == 'user_name|desc' ? 'selected' : '' }}>Имя (убывание)</option>
-                        <option value="email|asc" {{ request('sort_direction') == 'email|asc' ? 'selected' : '' }}>Email (возрастание)</option>
-                        <option value="email|desc" {{ request('sort_direction') == 'email|desc' ? 'selected' : '' }}>Email (убывание)</option>
-                    </select>
-                    <button type="submit" class="btn btn-light btn-sm">Применить сортировку</button>
+                    <div class="container">
+                        <div class="row">
+                            <label for="sort" class="me-2">Сортировать по:</label>
+                            <select name="column" id="column" class="form-select me-2 col-1">
+                                <option value="created_at" {{ !in_array(request('column'), ['user_name', 'email'], true) ? 'selected' : '' }}>Дата</option>
+                                <option value="user_name" {{ request('column') === 'user_name' ? 'selected' : '' }}>Имя</option>
+                                <option value="email" {{ request('column') === 'email' ? 'selected' : '' }}>Email</option>
+                            </select>
+                            <select name="direction" id="direction" class="form-select me-2 col-1">
+                                <option value="desc" {{ request('direction') !== 'asc' ? 'selected' : '' }}>убывание</option>
+                                <option value="asc" {{ request('direction') === 'asc' ? 'selected' : '' }}>возрастание</option>
+                            </select>
+                            <button type="submit" class="btn btn-light btn-sm col-1">Применить сортировку</button>
+                        </div>
+                    </div>
+{{--                    <select name="sort_direction" id="sort_direction" class="form-select me-2">--}}
+{{--                        <option value="created_at|desc" {{ request('sort_direction') == 'created_at|desc' ? 'selected' : '' }}>Дата (убывание)</option>--}}
+{{--                        <option value="created_at|asc" {{ request('sort_direction') == 'created_at|asc' ? 'selected' : '' }}>Дата (возрастание)</option>--}}
+{{--                        <option value="user_name|asc" {{ request('sort_direction') == 'user_name|asc' ? 'selected' : '' }}>Имя (возрастание)</option>--}}
+{{--                        <option value="user_name|desc" {{ request('sort_direction') == 'user_name|desc' ? 'selected' : '' }}>Имя (убывание)</option>--}}
+{{--                        <option value="email|asc" {{ request('sort_direction') == 'email|asc' ? 'selected' : '' }}>Email (возрастание)</option>--}}
+{{--                        <option value="email|desc" {{ request('sort_direction') == 'email|desc' ? 'selected' : '' }}>Email (убывание)</option>--}}
+{{--                    </select>--}}
                 </form>
             </div>
 
 
             {{ $comments->links() }}
             @foreach($comments as $comment)
-                <div class="card text-center m-3 ">
-                    <div class="card-header">
-                        {{$comment->user_name}}
+                <div class="card text-start m-3 w-100">
+                    <div class="card-header d-flex justify-content-between">
+                        <div>
+                            {{$comment->user_name}}
+                        </div>
+                        <div class="text-end text-sm">
+                            {{$comment->created_at->diffForHumans()}}
+                        </div>
                     </div>
                     <div class="card-body">
+                        @foreach ($comment->getMedia('comment_media') as $media)
+                            @if (str_starts_with($media->mime_type, 'image/'))
+                                <img src="{{ $media->getUrl() }}" alt="Image">
+                            @elseif (str_starts_with($media->mime_type, 'video/'))
+                                <video controls>
+                                    <source src="{{ $media->getUrl() }}" type="{{ $media->mime_type }}">
+                                    Your browser does not support the video tag.
+                                </video>
+                            @endif
+                        @endforeach
+
                         @if ($comment && $comment->text)
                             <p class="card-text">{{ $comment->text->text }}</p>
                         @else
@@ -54,19 +83,15 @@
                         @endif
                     </div>
 
-                    <form method="get" action="{{ route('comments.create') }}">
+                    <form method="get" action="{{ route('comments.create') }}" class="text-center">
                         @csrf
                         <input type="hidden" name="parent_id" value="{{ $comment->id }}">
-                        <button type="submit" class="btn btn-link">Ответить</button>
+                        <button type="submit" class="btn btn-link text-end">reply</button>
                     </form>
 
-                    <div class="card-footer text-body-secondary">
-                        {{$comment->created_at->diffForHumans()}}
-                    </div>
+                    <button class="show-replies-btn btn-primary text-right text-sm m-2 text-primary" data-parent="{{ $comment->id }}">Show replies</button>
 
-                    <button class="show-replies-btn" data-parent="{{ $comment->id }}">Показать ответы</button>
                     <div class="replies-container" id="replies-container-{{ $comment->id }}"></div>
-
                 </div>
             @endforeach
         </div>
@@ -75,7 +100,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script src="{{ asset('js/comments.js') }}" defer></script>
+    @vite('resources/js/comments.js')
 
     </body>
 </html>

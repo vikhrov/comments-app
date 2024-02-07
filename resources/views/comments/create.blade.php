@@ -37,7 +37,7 @@
         <div class="container-fluid">
             <div class="card">
                 <div class="card-body">
-                    <form action="{{ route('comments.store') }}" method="POST">
+                    <form action="{{ route('comments.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="form-group">
                             <label for="user_name">Name:</label>
@@ -53,11 +53,19 @@
                             <label for="home_page">Home page:</label>
                             <input type="url" name="home_page" value="{{ old('home_page') }}" class="form-control">
                             <label for="text">Text:</label>
-                            <textarea type="text" name="text" value="{{ old('text') }}" class="form-control"></textarea>
+                            <textarea name="text" class="form-control">{{ old('text') }}</textarea>
                             @error('text')
                                 <p class="text-danger">{{ $message }}</p>
                             @enderror
                             <input type="hidden" value="{{ $parentComment?->id }}" name="parent_id">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="media">Загрузить файл</label>
+                            <input type="file" class="form-control" name="media" id="media">
+                            @error('media')
+                                <p class="text-danger">{{ $message }}</p>
+                            @enderror
                         </div>
 
                         <div class="form-group">

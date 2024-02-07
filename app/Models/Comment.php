@@ -3,9 +3,14 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Eloquent;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 /**
  * @property int $id
@@ -16,24 +21,25 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $home_page
  * @property ?int $parent_id
  * @property-read Text $text
+ * @property-read ?Media $media
+ * @property-read Collection <int, Media>|Media[] $media
  *
- * @mixin \Eloquent
+ * @mixin Eloquent
  */
 
-class Comment extends Model
+class Comment extends Model implements HasMedia
 {
-    protected $fillable =
-        [
-            'id',
-            'user_name',
-            'email',
-            'home_page',
-            'parent_id',
-        ];
+    use InteractsWithMedia;
+    protected $fillable = [
+        'id',
+        'user_name',
+        'email',
+        'home_page',
+        'parent_id',
+    ];
 
     public function text(): HasOne
     {
         return $this->hasOne(Text::class);
     }
-
 }

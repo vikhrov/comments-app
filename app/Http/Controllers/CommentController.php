@@ -2,82 +2,68 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\CreateCommentAction;
+use App\Actions\GetCommentListAction;
+use App\Exceptions\EntityCreateException;
+use App\Http\Requests\CommentValidationRequest;
+use App\Http\Requests\GetCommentListRequest;
 use App\Models\Comment;
-use App\Models\Text;;
-
-use DB;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\View\View;
 
 class CommentController extends Controller
 {
 
-    public function index(Request $request)
+    public function index(GetCommentListRequest $request, GetCommentListAction $action): View
     {
-        $sortDirection = $request->input('sort_direction', 'created_at|desc');
-        list($sortField, $sortDirection) = explode('|', $sortDirection);
+//        $sortDirection = $request->input('sort_direction', 'created_at|desc');
+//        list($sortField, $sortDirection) = explode('|', $sortDirection);
 
-        $comments = Comment::with(['text'])
-            ->where('parent_id', null)
-            ->orderBy($sortField, $sortDirection)
-            ->paginate(25);
+//        $comments = $action->execute(column: $sortField, order: $sortDirection);
+        $comments = $action->execute(column: $request->getColumn(), order: $request->getDirection());
 
-        return view('welcome', compact('comments'));
+        return view('welcome', compact('comments',));
     }
 
-    public function create(Request $request)
+    public function create(Request $request): View
     {
         $parentId = $request->input('parent_id');
         $parentComment = Comment::find($parentId);
 
-        $comment = new Comment;
-        return view ('comments.create', compact('comment', 'parentComment'));
+        return view ('comments.create', compact('parentComment'));
     }
 
-    public function store(Request $request)
+    public function store(CommentValidationRequest $request, CreateCommentAction $action): RedirectResponse
     {
-
-        $request->validate([
-            'user_name' => 'required|string|min:2|max:256',
-            'email' => 'required|email|string|max:256',
-            'home_page' => 'nullable|string|url|max:256',
-            'text' => 'required|string|min:2|max:2000',
-            'parent_id' => 'nullable|numeric',
-            'captcha' => 'required|captcha',
-        ]);
-
-        $parentId = $request->input('parent_id');
-
-// TODO: add DB::transaction
         try {
-            DB::transaction(function () use ($request, $parentId) {
-                $comment = Comment::create([
-                    'user_name' => $request->input('user_name'),
-                    'email' => $request->input('email'),
-                    'home_page' => $request->input('home_page'),
-                    'parent_id' => $parentId,
+            $action->execute($request->getData());
+        } catch (EntityCreateException) {
+            return back()->withErrors([
+                    'body' => 'Fail to create comment. Something went wrong'
                 ]);
-
-                Text::create([
-                    'text' => $request->input('text'),
-                    'comment_id' => $comment->id,
-                ]);
-            });
-
-        } catch (\Throwable $e) {
-            $e->getMessage();
-            dd($e);
         }
 
         return redirect(route('comments.index'));
     }
 
-    public function getReplies($parentId)
+//    public function getReplies(int $parentId): View
+//    {
+//        $replies = Comment::with(['text', 'media'])
+//            ->where('parent_id', $parentId)
+//            ->orderBy('created_at', 'desc')
+//            ->get();
+//
+//        return view('comments.replies', compact('replies'));
+//    }
+
+    public function getReplies(int $parentId): View
     {
-        $replies = Comment::with(['text'])->where('parent_id', $parentId)->get();
+        $replies = Comment::with(['text', 'media'])
+            ->where('parent_id', $parentId)
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         return view('comments.replies', compact('replies'));
     }
-
-
 }
