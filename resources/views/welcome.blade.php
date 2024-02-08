@@ -26,6 +26,7 @@
                 </div>
 
                 <form method="get" action="{{ route('comments.index') }}">
+                    @csrf
                     <div class="container">
                         <div class="row">
                             <label for="sort" class="me-2">Сортировать по:</label>
@@ -41,14 +42,6 @@
                             <button type="submit" class="btn btn-light btn-sm col-1">Применить сортировку</button>
                         </div>
                     </div>
-{{--                    <select name="sort_direction" id="sort_direction" class="form-select me-2">--}}
-{{--                        <option value="created_at|desc" {{ request('sort_direction') == 'created_at|desc' ? 'selected' : '' }}>Дата (убывание)</option>--}}
-{{--                        <option value="created_at|asc" {{ request('sort_direction') == 'created_at|asc' ? 'selected' : '' }}>Дата (возрастание)</option>--}}
-{{--                        <option value="user_name|asc" {{ request('sort_direction') == 'user_name|asc' ? 'selected' : '' }}>Имя (возрастание)</option>--}}
-{{--                        <option value="user_name|desc" {{ request('sort_direction') == 'user_name|desc' ? 'selected' : '' }}>Имя (убывание)</option>--}}
-{{--                        <option value="email|asc" {{ request('sort_direction') == 'email|asc' ? 'selected' : '' }}>Email (возрастание)</option>--}}
-{{--                        <option value="email|desc" {{ request('sort_direction') == 'email|desc' ? 'selected' : '' }}>Email (убывание)</option>--}}
-{{--                    </select>--}}
                 </form>
             </div>
 
@@ -77,7 +70,7 @@
                         @endforeach
 
                         @if ($comment && $comment->text)
-                            <p class="card-text">{{ $comment->text->text }}</p>
+                            <p class="card-text">{!! html_entity_decode($comment->text->text) !!}</p>
                         @else
                             <p class="card-text">Нет текста для этого комментария</p>
                         @endif
@@ -89,7 +82,9 @@
                         <button type="submit" class="btn btn-link text-end">reply</button>
                     </form>
 
-                    <button class="show-replies-btn btn-primary text-right text-sm m-2 text-primary" data-parent="{{ $comment->id }}">Show replies</button>
+                    @if($comment->replies->count() > 0)
+                        <button class="show-replies-btn btn-primary text-right text-sm m-2 text-primary" data-parent="{{ $comment->id }}">Show replies</button>
+                    @endif
 
                     <div class="replies-container" id="replies-container-{{ $comment->id }}"></div>
                 </div>

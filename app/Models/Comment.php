@@ -42,4 +42,9 @@ class Comment extends Model implements HasMedia
     {
         return $this->hasOne(Text::class);
     }
+
+    public function replies()
+    {
+        return $this->hasMany(Comment::class, 'parent_id');
+    }
 }
