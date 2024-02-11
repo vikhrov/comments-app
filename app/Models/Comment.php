@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Eloquent;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 use Spatie\MediaLibrary\HasMedia;
@@ -21,7 +22,6 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property string $home_page
  * @property ?int $parent_id
  * @property-read Text $text
- * @property-read ?Media $media
  * @property-read Collection <int, Media>|Media[] $media
  *
  * @mixin Eloquent
@@ -43,7 +43,7 @@ class Comment extends Model implements HasMedia
         return $this->hasOne(Text::class);
     }
 
-    public function replies()
+    public function replies(): HasMany
     {
         return $this->hasMany(Comment::class, 'parent_id');
     }

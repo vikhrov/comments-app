@@ -32,9 +32,12 @@
                         <img src="{{ $parentComment->getMedia('comment_media')->first()->getUrl() }}" alt="Image">
                     @endif
                 </div>
-                <div>
-                    {!! html_entity_decode($parentComment->text->text) !!}
-                </div>
+                @if($parentComment->text)
+                    <div>
+                        {!! html_entity_decode($parentComment->text->text) !!}
+                    </div>
+                @endif
+
             </div>
         @endif
     <div class="content">
@@ -120,11 +123,8 @@
         </div>
 
     </div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-    <script
-        src="https://code.jquery.com/jquery-3.7.1.js"
-        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
-        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         function previewText() {
             var text = $('#text').val();
@@ -173,20 +173,22 @@
 
             previewText();
         }
-
         function insertLink() {
             var url = prompt("Enter the URL:");
+            var textarea = document.getElementById('text');
+            var start = textarea.selectionStart;
+            var end = textarea.selectionEnd;
+            var selectedText = textarea.value.substring(start, end);
             if (url !== null) {
-                var title = prompt("Enter the title (optional):");
-                var link = '<a href="' + url + '"';
-                if (title) {
-                    link += ' title="' + title + '"';
-                }
-                link += '>Link text</a>';
-                insertTag('', '');
+                var link = '<a href="' + url + '">' + selectedText + '</a>';
+                console.log(link);
+
+                textarea.value = textarea.value.substring(0, start) + link + textarea.value.substring(end);
+
 
                 previewText();
             }
+
         }
 
         function previewText() {

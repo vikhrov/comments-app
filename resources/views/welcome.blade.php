@@ -29,17 +29,20 @@
                     @csrf
                     <div class="container">
                         <div class="row">
-                            <label for="sort" class="me-2">Сортировать по:</label>
-                            <select name="column" id="column" class="form-select me-2 col-1">
-                                <option value="created_at" {{ !in_array(request('column'), ['user_name', 'email'], true) ? 'selected' : '' }}>Дата</option>
-                                <option value="user_name" {{ request('column') === 'user_name' ? 'selected' : '' }}>Имя</option>
-                                <option value="email" {{ request('column') === 'email' ? 'selected' : '' }}>Email</option>
-                            </select>
-                            <select name="direction" id="direction" class="form-select me-2 col-1">
-                                <option value="desc" {{ request('direction') !== 'asc' ? 'selected' : '' }}>убывание</option>
-                                <option value="asc" {{ request('direction') === 'asc' ? 'selected' : '' }}>возрастание</option>
-                            </select>
-                            <button type="submit" class="btn btn-light btn-sm col-1">Применить сортировку</button>
+                            <div class="col-6">
+                                <label for="sort" class="me-2">Сортировать по:</label>
+                                <select name="column" id="column" class="form-select me-2">
+                                    <option value="created_at" {{ !in_array(request('column'), ['user_name', 'email'], true) ? 'selected' : '' }}>Дата</option>
+                                    <option value="user_name" {{ request('column') === 'user_name' ? 'selected' : '' }}>Имя</option>
+                                    <option value="email" {{ request('column') === 'email' ? 'selected' : '' }}>Email</option>
+                                </select>
+                                <select name="direction" id="direction" class="form-select me-2">
+                                    <option value="desc" {{ request('direction') !== 'asc' ? 'selected' : '' }}>убывание</option>
+                                    <option value="asc" {{ request('direction') === 'asc' ? 'selected' : '' }}>возрастание</option>
+                                </select>
+                            </div>
+
+                            <button type="submit" class="btn btn-light btn-sm col-3">Применить сортировку</button>
                         </div>
                     </div>
                 </form>

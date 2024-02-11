@@ -18,6 +18,7 @@ class CommentController extends Controller
     public function index(GetCommentListRequest $request, GetCommentListAction $action): View
     {
         $comments = $action->execute(column: $request->getColumn(), order: $request->getDirection());
+        $comments->appends(['column' => $request->getColumn(), 'direction' => $request->getDirection()]);
 
 
         return view('welcome', compact('comments',));
@@ -44,13 +45,22 @@ class CommentController extends Controller
         return redirect(route('comments.index'));
     }
 
-    public function getReplies(int $parentId): View
-    {
-        $replies = Comment::with(['text', 'media'])
-            ->where('parent_id', $parentId)
-            ->orderBy('created_at', 'desc')
-            ->paginate(25);
+//    public function getReplies(int $parentId): View
+//    {
+//        $replies = Comment::with(['text', 'media'])
+//            ->where('parent_id', $parentId)
+//            ->orderBy('created_at', 'desc')
+//            ->paginate(25);
+//
+//        return view('comments.replies', compact('replies'));
+//    }
 
-        return view('comments.replies', compact('replies'));
+    public function getReplies(GetCommentListRequest $request, GetCommentListAction $action): View
+    {
+        $comments = $action->execute(column: $request->getColumn(), order: $request->getDirection());
+        $comments->appends(['column' => $request->getColumn(), 'direction' => $request->getDirection()]);
+
+
+        return view('comments.replies', compact('replies',));
     }
 }

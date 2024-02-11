@@ -29,4 +29,6 @@ class GetCommentListRequest extends FormRequest
     {
         return $this->validated('direction') ?? 'desc';
     }
+
+
 }

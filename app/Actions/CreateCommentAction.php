@@ -46,29 +46,6 @@ class CreateCommentAction
                     };
 
                     $comment->setRelation('media', collect($media));
-                    // Проверка и обработка изображений
-//                    if ($uploadedFile->getMimeType() === 'image/jpeg' || $uploadedFile->getMimeType() === 'image/png' || $uploadedFile->getMimeType() === 'image/gif') {
-//                        // TODO add try catch with Throwable ad throw Validation exception
-//                        $image = \Image::make($uploadedFile->path());
-//                        $image->fit(320, 240); // Обрезаем изображение до заданных размеров
-//                        $image->save(storage_path('app/' . $mediaPath));
-////                        \Storage::disk('public')->put('/', $image->stream());
-////                        $comment->addMediaFromStream($image->stream())->toMediaCollection('comment_media');
-//                    }
-
-                    // Проверка и обработка текстовых файлов
-//                    if ($uploadedFile->getMimeType() === 'text/plain') {
-//                        if ($uploadedFile->getSize() > 100 * 1024) {
-//                            throw ValidationException::withMessages([
-//                                'media' => 'The file may not be greater than 100 kilobytes.',
-//                            ]);
-//                        } else {
-//                            $uploadedFile->storeAs('public/media', $uploadedFile->getClientOriginalName());
-////                            $comment->addMedia($uploadedFile->path())->toMediaCollection('comment_media');
-//                        }
-//                    }
-//
-//                    $comment->addMedia(storage_path('app/' . $mediaPath))->toMediaCollection('comment_media');
                 }
 
                 return $comment->setRelation('text', $text);

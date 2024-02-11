@@ -3,24 +3,31 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
+use Faker\Factory as Faker;
+use App\Models\Comment;
+use App\Models\Text;
 
 class CommentSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
-    public function run(): void
+    public function run()
     {
-        for ($i=0; $i<40; $i++) {
-            DB::table('comments')->insert([
-                'user_name' => fake()->name(),
-                'email' => fake()->email(),
-                'parent_id' => fake()->randomElement([null,3,2,4,5]),
-                'created_at' => fake()->date(),
+        $faker = Faker::create();
+
+        for ($i = 0; $i < 200; $i++) {
+            $parentCommentId = rand(0, 1) ? Comment::inRandomOrder()->value('id') : null;
+            $comment = Comment::create([
+                'user_name' => $faker->name,
+                'email' => $faker->email,
+                'home_page' => $faker->url,
+                'parent_id' => $parentCommentId,
+                'created_at' => $faker->dateTimeBetween('-1 year'),
             ]);
+
+            Text::create([
+                'comment_id' => $comment->id,
+                'text' => $faker->paragraph,
+            ]);
+
         }
     }
 }

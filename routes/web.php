@@ -14,9 +14,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->to('/comments');
 });
+
 Route::middleware(['web'])->group(function () {
     Route::prefix('comments')->as('comments.')->group(function () {
         Route::get('/', [CommentController::class, 'index'])->name('index');

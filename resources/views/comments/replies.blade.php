@@ -1,7 +1,12 @@
 @foreach($replies as $reply)
     <div class="card text-center mb-3 ms-5">
-        <div class="card-header">
-            {{$reply->user_name}}
+        <div class="card-header d-flex justify-content-between">
+            <div>
+                {{$reply->user_name}}
+            </div>
+            <div class="text-end text-sm">
+                {{$reply->created_at->diffForHumans()}}
+            </div>
         </div>
         <div class="card-body">
             @if ($reply && $reply->text)
@@ -18,7 +23,6 @@
         </form>
 
         <div class="card-footer text-body-secondary">
-            {{$reply->created_at->diffForHumans()}}
         </div>
         @if($reply->replies->count() > 0)
             <button class="show-replies-btn btn-primary text-right text-sm m-2 text-primary" data-parent="{{ $reply->id }}">Show replies</button>
