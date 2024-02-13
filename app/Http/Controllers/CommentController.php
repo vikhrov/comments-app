@@ -17,8 +17,8 @@ class CommentController extends Controller
 
     public function index(GetCommentListRequest $request, GetCommentListAction $action): View
     {
-        $comments = $action->execute(column: $request->getColumn(), order: $request->getDirection());
-        $comments->appends(['column' => $request->getColumn(), 'direction' => $request->getDirection()]);
+        $comments = $action->execute(order: $request->getOrder(), column: $request->getColumn());
+        $comments->appends(['column' => $request->getColumn(), 'direction' => $request->getOrder()]);
 
 
         return view('welcome', compact('comments',));
@@ -45,21 +45,9 @@ class CommentController extends Controller
         return redirect(route('comments.index'));
     }
 
-//    public function getReplies(int $parentId): View
-//    {
-//        $replies = Comment::with(['text', 'media'])
-//            ->where('parent_id', $parentId)
-//            ->orderBy('created_at', 'desc')
-//            ->paginate(25);
-//
-//        return view('comments.replies', compact('replies'));
-//    }
-
-    public function getReplies(GetCommentListRequest $request, GetCommentListAction $action): View
+    public function getReplies(int $parentId, GetCommentListAction $action): View
     {
-        $comments = $action->execute(column: $request->getColumn(), order: $request->getDirection());
-        $comments->appends(['column' => $request->getColumn(), 'direction' => $request->getDirection()]);
-
+        $replies = $action->execute(parentId: $parentId);
 
         return view('comments.replies', compact('replies',));
     }

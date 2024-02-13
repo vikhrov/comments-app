@@ -9,20 +9,13 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 class GetCommentListAction
 {
     public function execute(
+        ?string $order = 'desc',
         ?int $parentId = null,
         ?string $column = 'created_at',
-        string $order = 'asc'
     ): LengthAwarePaginator {
+//        dd($order,$parentId,$column);
         return Comment::with(['text', 'media'])
-            ->when(
-                $parentId,
-                function (Builder $q, int $parentId) {
-                    $q->where('parent_id', '=', $parentId);
-                },
-                function (Builder $q) {
-                    $q->whereNull('parent_id');
-                }
-            )
+            ->where('parent_id', '=', $parentId)
             ->orderBy($column, $order)
             ->paginate(25);
     }

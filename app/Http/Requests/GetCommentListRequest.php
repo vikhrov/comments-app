@@ -25,10 +25,11 @@ class GetCommentListRequest extends FormRequest
         return $this->validated('column') ?? 'created_at';
     }
 
-    public function getDirection(): string
+    public function getOrder(): string
     {
         return $this->validated('direction') ?? 'desc';
     }
+
 
 
 }

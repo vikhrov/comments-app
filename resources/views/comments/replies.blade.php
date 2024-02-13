@@ -9,6 +9,11 @@
             </div>
         </div>
         <div class="card-body">
+
+            @foreach ($reply->getMedia('comment_media') as $media)
+                    <img src="{{ $media->getUrl() }}" alt="Image">
+            @endforeach
+
             @if ($reply && $reply->text)
                 <p class="card-text">{!! html_entity_decode($reply->text->text) !!}</p>
             @else

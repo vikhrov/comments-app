@@ -30,10 +30,10 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-6">
-                                <label for="sort" class="me-2">Сортировать по:</label>
+                                <label for="sort" class="me-2">Sort by:</label>
                                 <select name="column" id="column" class="form-select me-2">
-                                    <option value="created_at" {{ !in_array(request('column'), ['user_name', 'email'], true) ? 'selected' : '' }}>Дата</option>
-                                    <option value="user_name" {{ request('column') === 'user_name' ? 'selected' : '' }}>Имя</option>
+                                    <option value="created_at" {{ !in_array(request('column'), ['user_name', 'email'], true) ? 'selected' : '' }}>Date</option>
+                                    <option value="user_name" {{ request('column') === 'user_name' ? 'selected' : '' }}>Name</option>
                                     <option value="email" {{ request('column') === 'email' ? 'selected' : '' }}>Email</option>
                                 </select>
                                 <select name="direction" id="direction" class="form-select me-2">
@@ -62,14 +62,7 @@
                     </div>
                     <div class="card-body">
                         @foreach ($comment->getMedia('comment_media') as $media)
-                            @if (str_starts_with($media->mime_type, 'image/'))
-                                <img src="{{ $media->getUrl() }}" alt="Image">
-                            @elseif (str_starts_with($media->mime_type, 'video/'))
-                                <video controls>
-                                    <source src="{{ $media->getUrl() }}" type="{{ $media->mime_type }}">
-                                    Your browser does not support the video tag.
-                                </video>
-                            @endif
+                            <img src="{{ $media->getUrl() }}" alt="Image">
                         @endforeach
 
                         @if ($comment && $comment->text)

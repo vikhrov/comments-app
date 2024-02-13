@@ -33,7 +33,6 @@ class CreateCommentAction
                 $text = Text::create($dto->toTextArray());
 
                 if ($uploadedFile = $dto->getMedia()) {
-//                    $mediaPath = $uploadedFile->store('public/media');
 
                     $media = match ($uploadedFile->getMimeType()) {
                         'image/jpeg',
@@ -64,7 +63,6 @@ class CreateCommentAction
      */
     private function saveImage(UploadedFile $file, Comment $comment): Media
     {
-        // TODO add try catch with Throwable ad throw Validation exception
         $image = Image::make($file->path());
         $image->fit(320, 240); // Обрезаем изображение до заданных размеров
         return $comment->addMediaFromStream($image->stream())
