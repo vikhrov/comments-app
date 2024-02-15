@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
@@ -64,3 +65,13 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+=======
+### Установка и запуск проекта
+
+1. **Установите Docker:** Если у вас еще нет Docker, скачайте и установите его с [официального сайта Docker](https://www.docker.com/get-started).
+
+2. **Скачайте контейнер проекта и запустите его:**
+   ```sh
+   docker run --rm -v $(pwd):/app -w /app ghcr.io/vikhrov/comments-app:comment-app sh -c "npm install && npm run dev"
+3. **Открыть браузер и перейти по адресу http://localhost:8080**
+>>>>>>> e476d2454ee6f1923c76f0809b4a83a63a82add8
