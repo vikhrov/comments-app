@@ -8,10 +8,6 @@ git clone https://github.com/vikhrov/comments-app.git
 ```bash
 cd comments-app
 ```
-3. Install Node.js dependencies
-```bash
-npm install
-```
 
 4. Make `.env` file and set needed variables
 ```bash
@@ -22,10 +18,18 @@ cp .env.example .env
 docker-compose up -d
 ```
 
+3. Install Node.js dependencies
+```bash
+docker-compose exec laravel.test npm install
+```
+
 6. Install Composer dependencies
 ```bash
 docker-compose exec laravel.test composer install
 ```
+6. docker-compose exec laravel.test php artisan key:generate
+
+7. docker-compose exec laravel.test php artisan storage:link
 
 7. Run database migrations and seeder
 ```bash
