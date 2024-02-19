@@ -1,3 +1,12 @@
+# Comments App
+
+This is a web application for managing comments. It's built using Laravel and Docker.
+
+## Features
+
+- Dockerized environment: Easy setup and deployment using Docker.
+- MySQL database: Persistent storage for comments data.
+
 # How to install project
 
 1. At first you need to clone project from get repository
