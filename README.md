@@ -29,32 +29,19 @@ cp .env.example .env
 docker-compose up -d
 ```
 
-5. Install Composer dependencies
-```bash
-docker-compose exec laravel.test composer install
-```
-
-6. Install Node.js dependencies
-```bash
-docker-compose exec laravel.test npm install
-```
-
-7. Generate key
+5. Generate key
 ```bash
 docker-compose exec laravel.test php artisan key:generate
 ```
 
-8. Create a symbolic link
+6. Create a symbolic link
 ```bash
 docker-compose exec laravel.test php artisan storage:link
 ```
 
-9. Run database migrations and seeder
+7. Run database migrations and seeder
 ```bash
 docker-compose exec laravel.test php artisan migrate:fresh --seed
 ```
 
-10. Open your browser and go to 'http://localhost'
-
-
-
+8. Open your browser and go to 'http://localhost'
