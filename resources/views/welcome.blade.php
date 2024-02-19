@@ -49,42 +49,42 @@
             </div>
 
 
-            {{ $comments->links() }}
-            @foreach($comments as $comment)
-                <div class="card text-start m-3 w-100">
-                    <div class="card-header d-flex justify-content-between">
-                        <div>
-                            {{$comment->user_name}}
-                        </div>
-                        <div class="text-end text-sm">
-                            {{$comment->created_at->diffForHumans()}}
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        @foreach ($comment->getMedia('comment_media') as $media)
-                            <img src="{{ $media->getUrl() }}" alt="Image">
-                        @endforeach
+{{--            {{ $comments->links() }}--}}
+{{--            @foreach($comments as $comment)--}}
+{{--                <div class="card text-start m-3 w-100">--}}
+{{--                    <div class="card-header d-flex justify-content-between">--}}
+{{--                        <div>--}}
+{{--                            {{$comment->user_name}}--}}
+{{--                        </div>--}}
+{{--                        <div class="text-end text-sm">--}}
+{{--                            {{$comment->created_at->diffForHumans()}}--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
+{{--                    <div class="card-body">--}}
+{{--                        @foreach ($comment->getMedia('comment_media') as $media)--}}
+{{--                            <img src="{{ $media->getUrl() }}" alt="Image">--}}
+{{--                        @endforeach--}}
 
-                        @if ($comment && $comment->text)
-                            <p class="card-text">{!! html_entity_decode($comment->text->text) !!}</p>
-                        @else
-                            <p class="card-text">Нет текста для этого комментария</p>
-                        @endif
-                    </div>
+{{--                        @if ($comment && $comment->text)--}}
+{{--                            <p class="card-text">{!! html_entity_decode($comment->text->text) !!}</p>--}}
+{{--                        @else--}}
+{{--                            <p class="card-text">Нет текста для этого комментария</p>--}}
+{{--                        @endif--}}
+{{--                    </div>--}}
 
-                    <form method="get" action="{{ route('comments.create') }}" class="text-center">
-                        @csrf
-                        <input type="hidden" name="parent_id" value="{{ $comment->id }}">
-                        <button type="submit" class="btn btn-link text-end">reply</button>
-                    </form>
+{{--                    <form method="get" action="{{ route('comments.create') }}" class="text-center">--}}
+{{--                        @csrf--}}
+{{--                        <input type="hidden" name="parent_id" value="{{ $comment->id }}">--}}
+{{--                        <button type="submit" class="btn btn-link text-end">reply</button>--}}
+{{--                    </form>--}}
 
-                    @if($comment->replies->count() > 0)
-                        <button class="show-replies-btn btn-primary text-right text-sm m-2 text-primary" data-parent="{{ $comment->id }}">Show replies</button>
-                    @endif
+{{--                    @if($comment->replies->count() > 0)--}}
+{{--                        <button class="show-replies-btn btn-primary text-right text-sm m-2 text-primary" data-parent="{{ $comment->id }}">Show replies</button>--}}
+{{--                    @endif--}}
 
-                    <div class="replies-container" id="replies-container-{{ $comment->id }}"></div>
-                </div>
-            @endforeach
+{{--                    <div class="replies-container" id="replies-container-{{ $comment->id }}"></div>--}}
+{{--                </div>--}}
+{{--            @endforeach--}}
         </div>
     </div>
 

@@ -20,7 +20,6 @@ class CommentController extends Controller
         $comments = $action->execute(order: $request->getOrder(), column: $request->getColumn());
         $comments->appends(['column' => $request->getColumn(), 'direction' => $request->getOrder()]);
 
-
         return view('welcome', compact('comments',));
     }
 
