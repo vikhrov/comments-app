@@ -39,17 +39,22 @@ docker-compose exec laravel.test composer install
 docker-compose exec laravel.test npm install
 ```
 
-7. Create a symbolic link
+7. Generate key
+```bash
+docker-compose exec laravel.test php artisan key:generate
+```
+
+8. Create a symbolic link
 ```bash
 docker-compose exec laravel.test php artisan storage:link
 ```
 
-8. Run database migrations and seeder
+9. Run database migrations and seeder
 ```bash
-docker-compose exec laravel.test php artisan migrate:fresh --seed --class=CommentsSeeder
+docker-compose exec laravel.test php artisan migrate:fresh --seed
 ```
 
-9. Open your browser and go to 'http://localhost'
+10. Open your browser and go to 'http://localhost'
 
 
 
