@@ -26,7 +26,7 @@ cp .env.example .env
 
 4. Start Docker containers
 ```bash
-docker-compose up -d
+docker-compose up -d && docker-compose logs -f
 ```
 
 5. Generate key
